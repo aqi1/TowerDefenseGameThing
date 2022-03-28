@@ -10,12 +10,14 @@ using UnityEngine.UI;
 public class SettingsMenu : MonoBehaviour
 {
 	public AudioMixer audioMixer;
-	public Dropdown resolutionDropdown;
+	public Dropdown resolutionDropdown, colorblindDropdown;
 	public Toggle fullscreenToggle, vsyncToggle;
 	public Slider masterSlider, fxSlider, musicSlider;
 	public List<string> options = new List<string>();
 
 	Resolution[] resolutions;
+
+	public Colorblind colorblindScript;
 
 	void Start()
 	{
@@ -42,7 +44,7 @@ public class SettingsMenu : MonoBehaviour
 
 		// should never happen
 		if(resolutions.Length == 0)
-        {
+		{
 			Screen.SetResolution(640, 360, false);
 		}
 
@@ -53,6 +55,7 @@ public class SettingsMenu : MonoBehaviour
 		masterSlider.value = PlayerPrefs.GetFloat("masterVolume", 0f);
 		fxSlider.value = PlayerPrefs.GetFloat("fxVolume", 0f);
 		musicSlider.value = PlayerPrefs.GetFloat("musicVolume", 0f);
+		colorblindDropdown.value = PlayerPrefs.GetInt("colorblindMode", 0);
 	}
 
 	public void SetResolution(int resolutionIndex)
@@ -122,5 +125,13 @@ public class SettingsMenu : MonoBehaviour
 			audioMixer.SetFloat("MusicVolume", Volume);
 
 		PlayerPrefs.SetFloat("musicVolume", Volume);
+	}
+
+	public void ColorblindMode(int mode)
+    {
+		PlayerPrefs.SetInt("colorblindMode", mode);
+		
+		if(colorblindScript)
+			colorblindScript.ChangeColors(mode);
 	}
 }

@@ -113,11 +113,18 @@ public class WorldState : MonoBehaviour
             gameOverLore.text = "## NECROLOGUE ##\n\n";
             if (waveAtm > 15)
             {
+                gameOverLore.text += "Your unrelenting soul of defiance burns brightly as a beacon of hope parallel to that of the"
+                                + " God-Emperor Himself. You have ascended to the highest pantheons of sainthood, and your name is"
+                                + " bellowed in warcries across the arctic wastes to the urban battlegrounds of Nova Terra."
+                                + " In death, you have secured immortality, a fate lesser beings may only dream of.";
+            }
+            else if (waveAtm > 10)
+            {
                 gameOverLore.text += "Your unwavering sacrifice has bought sufficient time to rally the citizenry for a final stand"
                                 + " against the endless horde. Inspired by your actions, the people are animated with fresh ardor."
                                 + " The God-Emperor protects, always and forever, for He is our shield and we are His children.";
             }
-            else if (waveAtm > 10)
+            else if (waveAtm > 5)
             {
                 gameOverLore.text += "Your sacrifice, though valiant, left the enemy unperturbed. Soon, Novo Terra will be mere"
                                 + " radioactive ash. There will be no surrender, nor fear; all will be swept away"
