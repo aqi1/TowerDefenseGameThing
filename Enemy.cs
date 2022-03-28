@@ -56,7 +56,7 @@ public class Enemy : MonoBehaviour
             Quaternion rot = Quaternion.LookRotation((next.transform.position - transform.position).normalized);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, 6f);
 
-            Debug.Log(Vector3.Distance(transform.position, next.transform.position));
+            // Debug.Log(Vector3.Distance(transform.position, next.transform.position));
             if (Vector3.Distance(transform.position, next.transform.position) <= 0.09f)
             {
                 Debug.Log("Entered pathing if condition");

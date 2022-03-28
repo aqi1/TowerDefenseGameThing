@@ -8,8 +8,13 @@ public class Abilities : MonoBehaviour
     [SerializeField] private GameObject bombPrefab;
     [SerializeField] private GameObject sounds;
     private SoundController soundController;
-    private float bombCost = 30f;
+    private float reinforcementsCost = 15f;
+    private float bombCost = 20f;
     private bool bombTargeting = false;
+
+    // change cursor icon in targeting mode
+    [SerializeField] private Texture2D[] cursorTexture;
+    private Vector2 cursorHotspot;
 
     // Start is called before the first frame update
     void Start()
@@ -23,7 +28,6 @@ public class Abilities : MonoBehaviour
         if (bombTargeting && Input.GetMouseButtonDown(0))
         {
             BombDrop();
-            bombTargeting = false;
         }
     }
 
@@ -36,6 +40,39 @@ public class Abilities : MonoBehaviour
             soundController.PlaySound(6);
             worldState.SubtractPlayerMoney(bombCost);
             bombTargeting = true;
+
+            // change targeting crosshair based on colorblind setting
+            int colorMode = PlayerPrefs.GetInt("colorblindMode", 0);
+            switch (colorMode)
+            {
+                case 0:
+                    cursorHotspot = new Vector2(cursorTexture[0].width / 2, cursorTexture[0].height / 2);
+                    Cursor.SetCursor(cursorTexture[0], cursorHotspot, CursorMode.Auto);
+                    break;
+                case 1:
+                case 2:
+                case 3:
+                    cursorHotspot = new Vector2(cursorTexture[1].width / 2, cursorTexture[1].height / 2);
+                    Cursor.SetCursor(cursorTexture[1], cursorHotspot, CursorMode.Auto);
+                    break;
+                case 4:
+                    cursorHotspot = new Vector2(cursorTexture[2].width / 2, cursorTexture[2].height / 2);
+                    Cursor.SetCursor(cursorTexture[2], cursorHotspot, CursorMode.Auto);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    public void Reinforcements()
+    {
+        if (worldState.GetPlayerMoney() < reinforcementsCost) // insufficient funds
+            soundController.PlaySound(5);
+        else
+        {
+            worldState.SubtractPlayerMoney(reinforcementsCost);
+            worldState.HealPlayer();
         }
     }
 
@@ -45,6 +82,8 @@ public class Abilities : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
+            bombTargeting = false;
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
             GameObject bombing = Instantiate(bombPrefab, hit.point, Quaternion.identity) as GameObject;
             Destroy(bombing, 7);
         }

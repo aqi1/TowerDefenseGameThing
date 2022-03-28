@@ -100,9 +100,18 @@ public class WorldState : MonoBehaviour
             }
 
             // display end panel
-            gameOverStats.text = "\n\n"
-                                + (waveAtm - 1) + "\n"
-                                + defensesBuilt + "\n"
+            gameOverStats.text = "\n\n";
+
+            if(waveAtm == 0)
+            {
+                gameOverStats.text += "0\n";
+            }
+            else
+            {
+                gameOverStats.text += (waveAtm - 1) + "\n";
+            }
+            
+            gameOverStats.text += defensesBuilt + "\n"
                                 + defensesUpgraded + "\n\n"
                                 + bulletsFired + "\n"
                                 + flamesSpread + "\n"
@@ -144,10 +153,21 @@ public class WorldState : MonoBehaviour
     public void DamagePlayer()
     {
         if(playerLives > 0)
-            playerLives--;
+            playerLives -= 1;
 
         if (!soundController.IsPlayingIndex(4) && !isGameOver)
             soundController.PlaySound(4);
+    }
+
+    public void HealPlayer()
+    {
+        if (playerLives <= 0 || isGameOver)
+            return;
+
+        playerLives += 1;
+
+        if (!soundController.IsPlayingIndex(7))
+            soundController.PlaySound(7);
     }
 
     public void AddPlayerMoney(float a)

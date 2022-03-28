@@ -7,6 +7,7 @@ public class Colorblind : MonoBehaviour
 {
     [SerializeField] private Text waveText, enemyText, lifeText, moneyText, winText;
     [SerializeField] private Image backgroundPanel;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -23,7 +24,7 @@ public class Colorblind : MonoBehaviour
                 lifeText.color = Color.red;
                 moneyText.color = Color.red;
                 winText.color = Color.red;
-                backgroundPanel.color = new Color(1f, 1f, 1f, 0.4f);
+                backgroundPanel.color = new Color(0.87f, 0.87f, 0.87f, 1.0f);
                 break;
             case 1:
             case 2:
@@ -32,7 +33,7 @@ public class Colorblind : MonoBehaviour
                 lifeText.color = Color.blue;
                 moneyText.color = Color.blue;
                 winText.color = Color.yellow;
-                backgroundPanel.color = new Color(1f, 1f, 1f, 0.6f);
+                backgroundPanel.color = new Color(0.87f, 0.87f, 0.87f, 1.0f);
                 break;
             case 3:
                 Color orange = new Color(1f, 0.5f, 0.1f);
@@ -41,8 +42,17 @@ public class Colorblind : MonoBehaviour
                 lifeText.color = orange;
                 moneyText.color = orange;
                 winText.color = orange;
-                backgroundPanel.color = new Color(0.8f, 0.8f, 0.8f, 0.5f);
+                backgroundPanel.color = new Color(0.5f, 0.5f, 0.5f, 1.0f);
                 break;
+            case 4:
+                Color greyish = new Color(0.20f, 0.20f, 0.20f, 1.0f);
+                waveText.color = greyish;
+                enemyText.color = greyish;
+                lifeText.color = greyish;
+                moneyText.color = greyish;
+                winText.color = greyish;
+                backgroundPanel.color = new Color(0.87f, 0.87f, 0.87f, 1.0f);
+                break; 
             default:
                 break;
         }
