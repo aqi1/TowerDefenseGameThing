@@ -45,7 +45,7 @@ public class EnemySpawner : MonoBehaviour
             yield return new WaitForSeconds(spawnEnemyInWaveWaitTime);
         }
         if(nEnemiesInWave < 100)
-        nEnemiesInWave += 20; // add 20 enemies per wave
+        nEnemiesInWave += 20; // add enemies per wave
         isWaveSpawning = false;
     }
 

@@ -33,7 +33,7 @@ public class TowerSelector : MonoBehaviour
 
             towerLocation.GetComponent<TowerGenerator>().tower = tower;
             towerLocation.GetComponent<TowerGenerator>().hasTower = true;
-            gameObject.SetActive(false);
+            towerLocation.GetComponent<TowerGenerator>().SelectTower(); // show upgrade dialog
         }
     }
 

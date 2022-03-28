@@ -32,6 +32,9 @@ public class SciFiBeamScript : MonoBehaviour {
     public bool shooting = false;
     public Vector3 startLoc, endLoc;
 
+    // layermask to prevent beam from colliding with IgnoreRaycast layer
+    private int layermask = ~(1 << 2);
+
     void Start()
     {
         if (textBeamName)
@@ -87,7 +90,7 @@ public class SciFiBeamScript : MonoBehaviour {
 
         Vector3 end = Vector3.zero;
         RaycastHit hit;
-        if (Physics.Raycast(start, dir, out hit))
+        if (Physics.Raycast(start, dir, out hit, Mathf.Infinity, layermask))
             end = hit.point - (dir.normalized * beamEndOffset);
         else
             end = transform.position + (dir * 100);

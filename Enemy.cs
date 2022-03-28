@@ -22,20 +22,25 @@ public class Enemy : MonoBehaviour
         enemySpawnerScript = GameObject.FindGameObjectWithTag("EnemySpawner").GetComponent<EnemySpawner>();
 
         if (enemySpawnerScript.GetWaveNumber() <= 5)
-            health = health * (enemySpawnerScript.GetWaveNumber() / 2.0f);
+            health = health * (enemySpawnerScript.GetWaveNumber() / 1.7f);
         else if (enemySpawnerScript.GetWaveNumber() <= 10)
         {   // exponential health multiplier starting on wave 6
-            health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.8f), 1.05f);
+            health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.6f), 1.08f);
             speed = speed * 1.2f;
         }
         else if (enemySpawnerScript.GetWaveNumber() <= 15)
         {   // even more exponential health multiplier starting on wave 11
-            health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.6f), 1.1f);
+            health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.5f), 1.13f);
+            speed = speed * 1.44f;
+        }
+        else if (enemySpawnerScript.GetWaveNumber() <= 20)
+        {   // good luck
+            health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.4f), 1.21f);
             speed = speed * 1.44f;
         }
         else
         {   // good luck
-            health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.5f), 1.2f);
+            health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.4f), 1.26f);
             speed = speed * 1.44f;
         }
 
@@ -45,7 +50,10 @@ public class Enemy : MonoBehaviour
         transform.position = prev.transform.position;
     }
 
-    // enemy pathing
+    // enemy pathing. FixedUpdate() runs at 50 fps, which means enemy movement updates at 50 fps.
+    // This provides consistency, but might be bad practice, as someone running the game at 120 fps
+    // and with a 120 Hz monitor would still only see enemies move 50 times / sec instead of 120,
+    // thus not fully taking advantage of the hardware's potential. Might change this in the future.
     void FixedUpdate()
     {
         if (Convert.ToInt32(prev.name) + 1 < enemyPath.Count)
@@ -113,6 +121,10 @@ public class Enemy : MonoBehaviour
         if (other.gameObject.tag == "aoeDamage")
         {
             TakeDamage(25f * fireDamageMultiplier * Time.fixedDeltaTime);
+        }
+        else if (other.gameObject.tag == "aoeDamage2")
+        {
+            TakeDamage(35f * fireDamageMultiplier * Time.fixedDeltaTime);
         }
         // bombing run effect
         else if (other.gameObject.tag == "bombDamage")

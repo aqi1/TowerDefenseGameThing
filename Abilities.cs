@@ -83,8 +83,8 @@ public class Abilities : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             bombTargeting = false;
-            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-            GameObject bombing = Instantiate(bombPrefab, hit.point, Quaternion.identity) as GameObject;
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto); // reset cursor to default icon
+            GameObject bombing = Instantiate(bombPrefab, hit.point, Quaternion.identity) as GameObject; // spawn explosions prefab
             Destroy(bombing, 7);
         }
     }

@@ -8,7 +8,9 @@ public class TowerShooting : MonoBehaviour
 {
     [SerializeField] private Transform fireLocation;
     [SerializeField] private GameObject flameGround;
+    [SerializeField] private GameObject superFlameGround;
     [SerializeField] private ParticleSystem flamerFlash;
+    [SerializeField] private ParticleSystem superFlamerFlash;
     [SerializeField] private ParticleSystem muzzleFlash1;
     [SerializeField] private ParticleSystem muzzleFlash2;
     [SerializeField] private GameObject towerHead;
@@ -132,12 +134,21 @@ public class TowerShooting : MonoBehaviour
 
     private void ShootFlame() // hits spawn a ground effect
     {
-        flamerFlash.Play(); // flame streak animation
         Enemy enemy = target.GetComponent<Enemy>();
-        enemy.TakeDamage(tower.towerDamage * tower.upgradeLevel * enemy.fireDamageMultiplier);
+        GameObject groundFire;
 
-        // spawn ground effect
-        GameObject groundFire = Instantiate(flameGround, target.transform.position, Quaternion.identity) as GameObject; // spawn ground fire
+        if (tower.upgradeLevel < 4)
+        {
+            flamerFlash.Play();
+            groundFire = Instantiate(flameGround, target.transform.position, Quaternion.identity) as GameObject; // spawn ground fire
+        }
+        else
+        {
+            superFlamerFlash.Play();
+            groundFire = Instantiate(superFlameGround, target.transform.position, Quaternion.identity) as GameObject;
+        }
+
+        enemy.TakeDamage(tower.towerDamage * tower.upgradeLevel * enemy.fireDamageMultiplier);
         Destroy(groundFire, 10);
 
         worldState.flamesSpread += 1;

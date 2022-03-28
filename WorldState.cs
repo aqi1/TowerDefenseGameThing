@@ -18,6 +18,10 @@ public class WorldState : MonoBehaviour
     [SerializeField] private Text waveNumberText;
     [SerializeField] private Text enemiesRemainingText;
 
+    [SerializeField] private GameObject towerSelectionPanel;
+    [SerializeField] private GameObject towerUpgradePanel;
+    [SerializeField] private GameObject selectionBox;
+
     [SerializeField] private GameObject sounds;
     [SerializeField] private GameObject jukeBox;
     [SerializeField] private AudioClip endMusic;
@@ -68,85 +72,15 @@ public class WorldState : MonoBehaviour
         else
             winObject.SetActive(false);
 
+        if (Input.GetMouseButtonDown(1))
+        {
+            ClearUI();
+        }
+
         // lose condition
         if (playerLives <= 0 && !isGameOver)
         {
-            isGameOver = true;
-
-            playerMoney = 0.0f;
-            soundController.StopSound(4);
-            soundController.PlaySound(3);
-
-            if (musicSource)
-            {
-                if(musicSource.isPlaying)
-                    musicSource.Stop();
-                musicSource.PlayOneShot(endMusic);
-            }
-
-            // delete towers and lingering beams upon game over
-            towers = GameObject.FindGameObjectsWithTag("Tower");
-            beams = GameObject.FindGameObjectsWithTag("BeamTag");
-
-            for (int i = 0; i < towers.Length; i++)
-            {
-                defensesBuilt += 1;
-                towers[i].SetActive(false);
-            }
-
-            for (int i = 0; i < beams.Length; i++)
-            {
-                beams[i].SetActive(false);
-            }
-
-            // display end panel
-            gameOverStats.text = "\n\n";
-
-            if(waveAtm == 0)
-            {
-                gameOverStats.text += "0\n";
-            }
-            else
-            {
-                gameOverStats.text += (waveAtm - 1) + "\n";
-            }
-            
-            gameOverStats.text += defensesBuilt + "\n"
-                                + defensesUpgraded + "\n\n"
-                                + bulletsFired + "\n"
-                                + flamesSpread + "\n"
-                                + beamsProjected + "\n\n"
-                                + casualtiesInflicted + "\n"
-                                + "1";
-
-            gameOverLore.text = "## NECROLOGUE ##\n\n";
-            if (waveAtm > 15)
-            {
-                gameOverLore.text += "Your unrelenting soul of defiance burns brightly as a beacon of hope parallel to that of the"
-                                + " God-Emperor Himself. You have ascended to the highest pantheons of sainthood, and your name is"
-                                + " bellowed in warcries across the arctic wastes to the urban battlegrounds of Nova Terra."
-                                + " In death, you have secured immortality, a fate lesser beings may only dream of.";
-            }
-            else if (waveAtm > 10)
-            {
-                gameOverLore.text += "Your unwavering sacrifice has bought sufficient time to rally the citizenry for a final stand"
-                                + " against the endless horde. Inspired by your actions, the people are animated with fresh ardor."
-                                + " The God-Emperor protects, always and forever, for He is our shield and we are His children.";
-            }
-            else if (waveAtm > 5)
-            {
-                gameOverLore.text += "Your sacrifice, though valiant, left the enemy unperturbed. Soon, Novo Terra will be mere"
-                                + " radioactive ash. There will be no surrender, nor fear; all will be swept away"
-                                + " by the divine wind.";
-            }
-            else
-            {
-                gameOverLore.text += "You have failed in your sole duty and have shamed His name.\n\nThe punishment for your"
-                                + " incompetence is death.";
-            }
-
-            gameOverPanels.SetActive(true);
-
+            GameOver();
         }
     }
 
@@ -198,5 +132,101 @@ public class WorldState : MonoBehaviour
     public bool IsGameOver()
     {
         return isGameOver;
+    }
+
+    private void ClearUI()
+    {
+        if(towerSelectionPanel)
+            towerSelectionPanel.SetActive(false);
+        if(towerUpgradePanel)
+            towerUpgradePanel.SetActive(false);
+        if(selectionBox)
+            selectionBox.SetActive(false);
+    }
+
+    private void GameOver()
+    {
+        isGameOver = true;
+
+        playerMoney = 0.0f;
+        soundController.StopSound(4);
+        soundController.PlaySound(3);
+
+        if (musicSource)
+        {
+            if (musicSource.isPlaying)
+                musicSource.Stop();
+            musicSource.PlayOneShot(endMusic);
+        }
+
+        // delete towers and lingering beams upon game over
+        towers = GameObject.FindGameObjectsWithTag("Tower");
+        beams = GameObject.FindGameObjectsWithTag("BeamTag");
+
+        for (int i = 0; i < towers.Length; i++)
+        {
+            defensesBuilt += 1;
+            towers[i].SetActive(false);
+        }
+
+        for (int i = 0; i < beams.Length; i++)
+        {
+            beams[i].SetActive(false);
+        }
+
+        // display end panel
+        gameOverStats.text = "\n\n";
+
+        if (waveAtm == 0)
+        {
+            gameOverStats.text += "0\n";
+        }
+        else
+        {
+            gameOverStats.text += (waveAtm - 1) + "\n";
+        }
+
+        gameOverStats.text += defensesBuilt + "\n"
+                            + defensesUpgraded + "\n\n"
+                            + bulletsFired + "\n"
+                            + flamesSpread + "\n"
+                            + beamsProjected + "\n\n"
+                            + casualtiesInflicted + "\n"
+                            + "1";
+
+        gameOverLore.text = "## NECROLOGUE ##\n\n";
+        if (waveAtm > 25)
+        {
+            gameOverLore.text += "The meaning of victory is not to merely defeat your enemy but to destroy him, to completely"
+                            + " eradicate him from living memory, to leave no remnant of his endeavours, to crush his achievement"
+                            + " and remove all record of his very existence. From that defeat there is no recovery."
+                            + " That is the meaning of victory. You are victorious.";
+        }
+        else if (waveAtm > 20)
+        {
+            gameOverLore.text += "Your unrelenting soul burns brightly as a beacon of hope parallel to that of the"
+                            + " God-Emperor Himself. You have ascended to the highest pantheons of sainthood, and your name is"
+                            + " bellowed in warcries from the arctic wastes in the north to the urban battlegrounds of Nova Terra."
+                            + " In death, you have attained immortality, a fate that lesser beings may only dream of.";
+        }
+        else if (waveAtm > 10)
+        {
+            gameOverLore.text += "Your unwavering sacrifice has bought sufficient time to rally the citizenry for a final stand"
+                            + " against the endless horde. Inspired by your actions, the people are animated with fresh ardor."
+                            + " The God-Emperor protects, always and forever, for He is our shield and we are His children.";
+        }
+        else if (waveAtm > 5)
+        {
+            gameOverLore.text += "Your sacrifice, though valiant, left the enemy unperturbed. Soon, Novo Terra will be mere"
+                            + " radioactive ash. There will be no surrender, nor fear; all will be swept away"
+                            + " by the divine wind.";
+        }
+        else
+        {
+            gameOverLore.text += "You have failed in your sole duty and have shamed His name.\n\nThe punishment for your"
+                            + " incompetence is death.";
+        }
+
+        gameOverPanels.SetActive(true);
     }
 }

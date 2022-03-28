@@ -12,7 +12,7 @@ public class SettingsMenu : MonoBehaviour
 	public AudioMixer audioMixer;
 	public Dropdown resolutionDropdown, colorblindDropdown;
 	public Toggle fullscreenToggle, vsyncToggle;
-	public Slider masterSlider, fxSlider, musicSlider;
+	public Slider masterSlider, fxSlider, voiceSlider, musicSlider;
 	public List<string> options = new List<string>();
 
 	Resolution[] resolutions;
@@ -54,6 +54,7 @@ public class SettingsMenu : MonoBehaviour
 		vsyncToggle.isOn = Convert.ToBoolean(PlayerPrefs.GetInt("vsync", 1));
 		masterSlider.value = PlayerPrefs.GetFloat("masterVolume", 0f);
 		fxSlider.value = PlayerPrefs.GetFloat("fxVolume", 0f);
+		voiceSlider.value = PlayerPrefs.GetFloat("voiceVolume", 0f);
 		musicSlider.value = PlayerPrefs.GetFloat("musicVolume", 0f);
 		colorblindDropdown.value = PlayerPrefs.GetInt("colorblindMode", 0);
 	}
@@ -115,6 +116,15 @@ public class SettingsMenu : MonoBehaviour
 			audioMixer.SetFloat("FXVolume", Volume);
 
 		PlayerPrefs.SetFloat("fxVolume", Volume);
+	}
+	public void SetVoiceVolume(float Volume)
+	{
+		if (Volume < -39f)
+			audioMixer.SetFloat("VoiceVolume", -80f);
+		else
+			audioMixer.SetFloat("VoiceVolume", Volume);
+
+		PlayerPrefs.SetFloat("voiceVolume", Volume);
 	}
 
 	public void SetMusicVolume(float Volume)
