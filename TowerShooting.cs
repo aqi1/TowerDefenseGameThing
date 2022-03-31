@@ -11,6 +11,8 @@ public class TowerShooting : MonoBehaviour
     [SerializeField] private GameObject superFlameGround;
     [SerializeField] private ParticleSystem flamerFlash;
     [SerializeField] private ParticleSystem superFlamerFlash;
+    [SerializeField] private GameObject smallExplosion;
+    [SerializeField] private GameObject superExplosion;
     [SerializeField] private ParticleSystem muzzleFlash1;
     [SerializeField] private ParticleSystem muzzleFlash2;
     [SerializeField] private GameObject towerHead;
@@ -39,23 +41,24 @@ public class TowerShooting : MonoBehaviour
     {
         if (tower.towerType == TOWER_TYPE.TESLA && !target)
         {
-            //laser.enabled = false;
             beamer.shooting = false;
             return;
         }
 
-        if(tower.towerType != TOWER_TYPE.TESLA && target)
-            LockOnTarget();
+        if (target)
+        {
+            if (tower.towerType != TOWER_TYPE.TESLA)
+                LockOnTarget();
 
-        ShootTarget();
+            ShootTarget();
+        }
     }
     private void LockOnTarget()
     {
-        // rotate tower but only on y-axis
+        // rotate tower but only around y
         Vector3 relativePos = target.transform.position - fireLocation.position;
         Quaternion LookAtRotation = Quaternion.LookRotation(relativePos);
-        Quaternion LookAtRotationY = Quaternion.Euler(transform.rotation.eulerAngles.x, LookAtRotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-        towerHead.transform.rotation = LookAtRotationY;
+        towerHead.transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, LookAtRotation.eulerAngles.y, transform.rotation.eulerAngles.z);
     }
 
     private void SelectTarget()
@@ -94,8 +97,10 @@ public class TowerShooting : MonoBehaviour
                 case TOWER_TYPE.FLAME:
                     ShootFlame();
                     break;
+                case TOWER_TYPE.ARTILLERY:
+                    ShootArtillery();
+                    break;
                 default:
-
                     break;
             }
 
@@ -112,8 +117,8 @@ public class TowerShooting : MonoBehaviour
         muzzleFlash1.Play();
         muzzleFlash2.Play();
         Enemy enemy = target.GetComponent<Enemy>();
-        enemy.fireDamageMultiplier += 0.08f * (1 + tower.upgradeLevel / 4);
-        enemy.TakeDamage(tower.towerDamage * tower.upgradeLevel);
+        enemy.fireDamageMultiplier += 0.16f * (1 + tower.upgradeLevel / 4);
+        enemy.TakeDamage(tower.towerDamage * tower.upgradeLevel, tower);
 
         worldState.bulletsFired += 1;
     }
@@ -126,7 +131,7 @@ public class TowerShooting : MonoBehaviour
         beamer.endLoc = target.transform.position;
 
         beamer.shooting = true;
-        enemy.TakeDamage(tower.towerDamage * tower.upgradeLevel);
+        enemy.TakeDamage(tower.towerDamage * tower.upgradeLevel, tower);
         enemy.HitByLaser(tower.upgradeLevel + 2); // slow enemy by X/argument speed
 
         worldState.beamsProjected += 1;
@@ -148,9 +153,40 @@ public class TowerShooting : MonoBehaviour
             groundFire = Instantiate(superFlameGround, target.transform.position, Quaternion.identity) as GameObject;
         }
 
-        enemy.TakeDamage(tower.towerDamage * tower.upgradeLevel * enemy.fireDamageMultiplier);
+        groundFire.transform.parent = gameObject.transform;
+        enemy.TakeDamage(tower.towerDamage * tower.upgradeLevel * enemy.fireDamageMultiplier, tower);
         Destroy(groundFire, 10);
 
         worldState.flamesSpread += 1;
+    }
+
+    private void ShootArtillery()
+    {
+        muzzleFlash1.Play();
+        GameObject explosion;
+        Collider[] colliders;
+
+        if (tower.upgradeLevel < 4)
+        {
+            explosion = Instantiate(smallExplosion, target.transform.position, Quaternion.identity) as GameObject;
+            colliders = Physics.OverlapSphere(target.transform.position, 1.2f);
+        }
+        else
+        {
+            explosion = Instantiate(superExplosion, target.transform.position, Quaternion.identity) as GameObject;
+            colliders = Physics.OverlapSphere(target.transform.position, 1.4f); // larger damage radius at max upgrade level
+        }
+        Destroy(explosion, 2);
+
+        foreach(var hitCollider in colliders)
+        {
+            if (hitCollider.CompareTag("Enemy"))
+            {
+                // don't scale damage as much as other towers (radius was increased)
+                hitCollider.GetComponent<Enemy>().TakeDamage(tower.towerDamage + (tower.towerDamage * (tower.upgradeLevel - 1)/ 1.5f), tower);
+            }
+        }
+
+        worldState.ordnanceDetonated += 1;
     }
 }

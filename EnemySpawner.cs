@@ -7,6 +7,8 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private GameObject enemyPrefabA;
     [SerializeField] private GameObject enemyPrefabB;
     [SerializeField] private GameObject enemyPrefabC;
+    [SerializeField] private GameObject enemyPrefabD;
+    [SerializeField] private GameObject enemyPrefabE;
     [SerializeField] private int nEnemiesInWave = 0;
     [SerializeField] private float spawnEnemyInWaveWaitTime = 0.5f;
     [SerializeField] private bool isWaveSpawning = false;
@@ -29,19 +31,26 @@ public class EnemySpawner : MonoBehaviour
         {
             waveNumber++;
             currentEnemiesAlive = nEnemiesInWave;
-            StartCoroutine(SpawnWave());
+
+            if(waveNumber <= 5)
+                StartCoroutine(SpawnWave(3));
+            else if(waveNumber <= 10)
+                StartCoroutine(SpawnWave(4));
+            else
+                StartCoroutine(SpawnWave(5));
+
             timer = spawnTimer;
         }
         else if(!isWaveSpawning && currentEnemiesAlive <= 0)
             timer -= Time.deltaTime;
     }
 
-    IEnumerator SpawnWave()
+    IEnumerator SpawnWave(int highrandom)
     {
         isWaveSpawning = true;
         for (int i = 0; i < nEnemiesInWave; i++)
         {
-            SpawnEnemy(3);
+            SpawnEnemy(highrandom);
             yield return new WaitForSeconds(spawnEnemyInWaveWaitTime);
         }
         if(nEnemiesInWave < 100)
@@ -62,6 +71,12 @@ public class EnemySpawner : MonoBehaviour
                 break;
             case 2:
                 Instantiate(enemyPrefabC, transform);
+                break;
+            case 3:
+                Instantiate(enemyPrefabD, transform);
+                break;
+            case 4:
+                Instantiate(enemyPrefabE, transform);
                 break;
             default:
                 break;

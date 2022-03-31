@@ -1,18 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TowerSelector : MonoBehaviour
 {
     //[SerializeField] GameObject towerPrefab;
     [SerializeField] private GameObject sounds;
     [SerializeField] private WorldState worldState;
+    [SerializeField] private GameObject[] towers;
+    [SerializeField] private GameObject debugtower;
     private SoundController soundController;
     public GameObject towerLocation;
-    public GameObject tower = null;
+    public GameObject towerObject = null;
     public Tower towerScript = null;
+    private bool sortingByRange = false;
 
     private Vector3 upgradeScaleChange;
+
+    private void Update()
+    {
+        CheckForKeybinds();
+    }
 
     void Start()
     {
@@ -29,9 +38,9 @@ public class TowerSelector : MonoBehaviour
             soundController.PlaySound(0);
             worldState.SubtractPlayerMoney(1);
 
-            tower = Instantiate(towerPre, towerLocation.transform.position, Quaternion.identity);
+            towerObject = Instantiate(towerPre, towerLocation.transform.position, Quaternion.identity);
 
-            towerLocation.GetComponent<TowerGenerator>().tower = tower;
+            towerLocation.GetComponent<TowerGenerator>().towerObject = towerObject;
             towerLocation.GetComponent<TowerGenerator>().hasTower = true;
             towerLocation.GetComponent<TowerGenerator>().SelectTower(); // show upgrade dialog
         }
@@ -39,13 +48,13 @@ public class TowerSelector : MonoBehaviour
 
     public void UpgradeTower()
     {
-        if (!tower)
+        if (!towerObject)
         {
             Debug.Log("No tower to Upgrade()");
             return;
         }
         else
-            towerScript = tower.GetComponent<Tower>();
+            towerScript = towerObject.GetComponent<Tower>();
 
         if (worldState.GetPlayerMoney() < towerScript.upgradeCost) // insufficient funds
             soundController.PlaySound(5);
@@ -57,10 +66,56 @@ public class TowerSelector : MonoBehaviour
             towerScript.upgradeLevel += 1;
             worldState.defensesUpgraded += 1;
 
-            tower.transform.localScale += upgradeScaleChange;
+            towerObject.transform.localScale += upgradeScaleChange;
 
             if (towerScript.upgradeLevel >= 4)
                 towerLocation.GetComponent<TowerGenerator>().SelectTower(); // hide the panel at max upgrade level of 4
+        }
+    }
+
+    public void SortingByRange()
+    {
+        sortingByRange = !sortingByRange;
+    }
+
+    // keybinds for towers. Need to make this prettier
+    private void CheckForKeybinds()
+    {
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            if (towerLocation.GetComponent<TowerGenerator>().hasTower)
+            {
+                UpgradeTower();
+            }
+            else
+            {
+                if(!sortingByRange)
+                    AddTower(towers[0]);
+                else
+                    AddTower(towers[2]);
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2) && !towerLocation.GetComponent<TowerGenerator>().hasTower)
+        {
+            if (!sortingByRange)
+                AddTower(towers[1]);
+            else
+                AddTower(towers[3]);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3) && !towerLocation.GetComponent<TowerGenerator>().hasTower)
+        {
+            if (!sortingByRange)
+                AddTower(towers[2]);
+            else
+                AddTower(towers[1]);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha4) && !towerLocation.GetComponent<TowerGenerator>().hasTower)
+        {
+            if (!sortingByRange)
+                AddTower(towers[3]);
+            else
+                AddTower(towers[0]);
         }
     }
 }

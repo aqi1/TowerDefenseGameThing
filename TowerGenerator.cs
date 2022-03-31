@@ -7,7 +7,8 @@ public class TowerGenerator : MonoBehaviour
     [SerializeField] private GameObject towerSelectionPanel;
     [SerializeField] private GameObject towerUpgradePanel;
     [SerializeField] private GameObject selectionBox;
-    public GameObject tower;
+    private SelectionBox selectionBoxScript;
+    public GameObject towerObject;
     public bool hasTower = false;
 
     void Awake()
@@ -15,13 +16,16 @@ public class TowerGenerator : MonoBehaviour
         towerSelectionPanel = GameObject.Find("TowerSelectionPanel");
         towerUpgradePanel = GameObject.Find("TowerUpgradePanel");
         selectionBox = GameObject.Find("SelectionBox");
+        selectionBoxScript = selectionBox.GetComponent<SelectionBox>();
     }
+
 
     void Start()
     {
         towerUpgradePanel.SetActive(false);
         towerSelectionPanel.SetActive(false);
         selectionBox.SetActive(false);
+        selectionBoxScript.tower = null;
     }
 
     public void SelectTower()
@@ -37,15 +41,20 @@ public class TowerGenerator : MonoBehaviour
         selectionBox.transform.position = selectionPosition;
         selectionBox.SetActive(true);
 
-        if (hasTower && tower.GetComponent<Tower>().upgradeLevel < 4) // filled spot
+        if (hasTower)
         {
-            towerUpgradePanel.SetActive(true);
-            towerUpgradePanel.GetComponent<TowerSelector>().tower = tower;
+            if (towerObject.GetComponent<Tower>().upgradeLevel < 4) // filled spot
+            {
+                towerUpgradePanel.SetActive(true);
+                towerUpgradePanel.GetComponent<TowerSelector>().towerObject = towerObject;
+            }
+            selectionBoxScript.tower = towerObject.GetComponent<Tower>();
         }
-        else if (!hasTower) // empty spot
+        else // empty spot
         {
             towerUpgradePanel.SetActive(false);
             towerSelectionPanel.SetActive(true);
+            selectionBoxScript.tower = null;
         }
     }
 }

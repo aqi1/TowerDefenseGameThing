@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TOWER_TYPE { GUN, MISSILE, TESLA, FLAME, TOWER_COUNT }
+public enum TOWER_TYPE { GUN, MISSILE, TESLA, FLAME, ARTILLERY, TOWER_COUNT }
 
 public class Tower : MonoBehaviour
 {
@@ -14,4 +14,5 @@ public class Tower : MonoBehaviour
 
     public float purchaseCost = 1f;
     public float upgradeCost = 1f;
+    public int killCount = 0;
 }

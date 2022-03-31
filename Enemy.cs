@@ -13,6 +13,7 @@ public class Enemy : MonoBehaviour
     private EnemySpawner enemySpawnerScript;
     private bool amIDead = false;
     private bool amISlowed = false;
+    private Tower lastTowerToHitMe = null;
     [SerializeField] public float fireDamageMultiplier = 1f;
 
     // Start is called before the first frame update
@@ -30,12 +31,12 @@ public class Enemy : MonoBehaviour
         }
         else if (enemySpawnerScript.GetWaveNumber() <= 15)
         {   // even more exponential health multiplier starting on wave 11
-            health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.5f), 1.13f);
+            health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.55f), 1.13f);
             speed = speed * 1.44f;
         }
         else if (enemySpawnerScript.GetWaveNumber() <= 20)
         {   // good luck
-            health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.4f), 1.21f);
+            health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.5f), 1.21f);
             speed = speed * 1.44f;
         }
         else
@@ -67,7 +68,6 @@ public class Enemy : MonoBehaviour
             // Debug.Log(Vector3.Distance(transform.position, next.transform.position));
             if (Vector3.Distance(transform.position, next.transform.position) <= 0.09f)
             {
-                Debug.Log("Entered pathing if condition");
                 prev = next;
             }
         }
@@ -79,9 +79,11 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, Tower tower)
     {
-        if(health > 0)
+        lastTowerToHitMe = tower;
+
+        if (health > 0)
             health = health - damage;
         if(health <= 0 && !amIDead)
         {
@@ -106,6 +108,9 @@ public class Enemy : MonoBehaviour
 
             Destroy(gameObject, 5);
             enemySpawnerScript.EnemyKilled(); // decrements enemy count
+
+            if (tower)
+                tower.killCount += 1;
         }
     }
 
@@ -120,16 +125,16 @@ public class Enemy : MonoBehaviour
         // stood in fire
         if (other.gameObject.tag == "aoeDamage")
         {
-            TakeDamage(25f * fireDamageMultiplier * Time.fixedDeltaTime);
+            TakeDamage(30f * fireDamageMultiplier * Time.fixedDeltaTime, other.gameObject.transform.parent.transform.parent.GetComponent<Tower>()); // that's bad
         }
         else if (other.gameObject.tag == "aoeDamage2")
         {
-            TakeDamage(35f * fireDamageMultiplier * Time.fixedDeltaTime);
+            TakeDamage(45f * fireDamageMultiplier * Time.fixedDeltaTime, other.gameObject.transform.parent.transform.parent.GetComponent<Tower>());
         }
         // bombing run effect
         else if (other.gameObject.tag == "bombDamage")
         {
-            TakeDamage(1200f * Time.fixedDeltaTime);
+            TakeDamage(1200f * Time.fixedDeltaTime, null);
         }
     }
 

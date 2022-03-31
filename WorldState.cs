@@ -41,6 +41,7 @@ public class WorldState : MonoBehaviour
     public uint bulletsFired = 0;
     public uint flamesSpread = 0;
     public uint beamsProjected = 0;
+    public uint ordnanceDetonated = 0;
     public uint casualtiesInflicted = 0;
 
     private bool isGameOver = false;
@@ -190,19 +191,13 @@ public class WorldState : MonoBehaviour
                             + defensesUpgraded + "\n\n"
                             + bulletsFired + "\n"
                             + flamesSpread + "\n"
-                            + beamsProjected + "\n\n"
+                            + beamsProjected + "\n"
+                            + ordnanceDetonated + "\n\n"
                             + casualtiesInflicted + "\n"
                             + "1";
 
         gameOverLore.text = "## NECROLOGUE ##\n\n";
-        if (waveAtm > 25)
-        {
-            gameOverLore.text += "The meaning of victory is not to merely defeat your enemy but to destroy him, to completely"
-                            + " eradicate him from living memory, to leave no remnant of his endeavours, to crush his achievement"
-                            + " and remove all record of his very existence. From that defeat there is no recovery."
-                            + " That is the meaning of victory. You are victorious.";
-        }
-        else if (waveAtm > 20)
+        if (waveAtm > 20)
         {
             gameOverLore.text += "Your unrelenting soul burns brightly as a beacon of hope parallel to that of the"
                             + " God-Emperor Himself. You have ascended to the highest pantheons of sainthood, and your name is"
@@ -218,7 +213,7 @@ public class WorldState : MonoBehaviour
         else if (waveAtm > 5)
         {
             gameOverLore.text += "Your sacrifice, though valiant, left the enemy unperturbed. Soon, Novo Terra will be mere"
-                            + " radioactive ash. There will be no surrender, nor fear; all will be swept away"
+                            + " radioactive ash. There will be no surrender, nor fear. All will be washed away"
                             + " by the divine wind.";
         }
         else
