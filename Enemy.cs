@@ -36,12 +36,12 @@ public class Enemy : MonoBehaviour
         }
         else if (enemySpawnerScript.GetWaveNumber() <= 20)
         {   // good luck
-            health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.5f), 1.21f);
+            health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.5f), 1.20f);
             speed = speed * 1.44f;
         }
         else
         {   // good luck
-            health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.4f), 1.26f);
+            health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.5f), 1.25f);
             speed = speed * 1.44f;
         }
 

@@ -60,8 +60,7 @@ public class TowerSelector : MonoBehaviour
             soundController.PlaySound(5);
         else if (towerScript.upgradeLevel < 4)
         {
-            if(!soundController.IsPlayingIndex(1))
-                soundController.PlaySound(1);
+            soundController.PlaySound(0);
             worldState.SubtractPlayerMoney(1);
             towerScript.upgradeLevel += 1;
             worldState.defensesUpgraded += 1;

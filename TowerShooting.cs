@@ -108,7 +108,8 @@ public class TowerShooting : MonoBehaviour
             if(audioSource && !audioSource.isPlaying)
                 audioSource.Play();
 
-            nextShootTime = Time.time + 1 / tower.shootRate;
+            // add some randomness to the attack rate
+            nextShootTime = Time.time + (1 / Random.Range(tower.shootRate, tower.shootRate * 1.1f));
         }
     }
 

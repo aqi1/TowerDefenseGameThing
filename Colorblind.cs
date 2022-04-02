@@ -24,16 +24,17 @@ public class Colorblind : MonoBehaviour
                 lifeText.color = Color.red;
                 moneyText.color = Color.red;
                 winText.color = Color.red;
-                backgroundPanel.color = new Color(0.87f, 0.87f, 0.87f, 1.0f);
+                backgroundPanel.color = new Color(1f, 1f, 1f, 1.0f);
                 break;
             case 1:
             case 2:
-                waveText.color = Color.blue;
-                enemyText.color = Color.blue;
-                lifeText.color = Color.blue;
-                moneyText.color = Color.blue;
-                winText.color = Color.yellow;
-                backgroundPanel.color = new Color(0.87f, 0.87f, 0.87f, 1.0f);
+                Color kindablue = new Color(0.63f, 0.75f, 0.95f, 1.0f);
+                waveText.color = kindablue;
+                enemyText.color = kindablue;
+                lifeText.color = kindablue;
+                moneyText.color = kindablue;
+                winText.color = kindablue;
+                backgroundPanel.color = new Color(0.5f, 0.5f, 0.5f, 1.0f);
                 break;
             case 3:
                 Color orange = new Color(1f, 0.5f, 0.1f);
@@ -45,13 +46,13 @@ public class Colorblind : MonoBehaviour
                 backgroundPanel.color = new Color(0.5f, 0.5f, 0.5f, 1.0f);
                 break;
             case 4:
-                Color greyish = new Color(0.20f, 0.20f, 0.20f, 1.0f);
+                Color greyish = new Color(1f, 1f, 1f, 1f);
                 waveText.color = greyish;
                 enemyText.color = greyish;
                 lifeText.color = greyish;
                 moneyText.color = greyish;
                 winText.color = greyish;
-                backgroundPanel.color = new Color(0.87f, 0.87f, 0.87f, 1.0f);
+                backgroundPanel.color = new Color(1f, 1f, 1f, 1.0f);
                 break; 
             default:
                 break;

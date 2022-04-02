@@ -7,9 +7,16 @@ using UnityEngine.UI;
 public class WorldState : MonoBehaviour
 {
     [SerializeField] private int playerLives = 10;
+
     [SerializeField] private GameObject gameOverPanels;
     [SerializeField] private GameObject gameOverObject;
     [SerializeField] private GameObject winObject;
+
+    [SerializeField] private GameObject menuBackground;
+    [SerializeField] private GameObject menuParent;
+    [SerializeField] private GameObject menuSettings;
+    [SerializeField] private GameObject menuConfirm;
+    [SerializeField] private Button menuButton;
 
     [SerializeField] private Text gameOverStats;
     [SerializeField] private Text gameOverLore;
@@ -34,6 +41,7 @@ public class WorldState : MonoBehaviour
     private int waveAtm;
     private GameObject[] towers;
     private GameObject[] beams;
+    private GameObject[] buildLocations;
 
     // game stats
     public uint defensesBuilt = 0;
@@ -45,6 +53,7 @@ public class WorldState : MonoBehaviour
     public uint casualtiesInflicted = 0;
 
     private bool isGameOver = false;
+    private bool playedWinSound = false;
 
     [SerializeField] private float playerMoney = 10f;
 
@@ -69,20 +78,40 @@ public class WorldState : MonoBehaviour
 
         // wave win condition
         if (waveAtm > 0 && enemiesAtm <= 0 && !isGameOver)
-            winObject.SetActive(true);
-        else
-            winObject.SetActive(false);
-
-        if (Input.GetMouseButtonDown(1))
         {
+            winObject.SetActive(true);
+            if (!soundController.IsPlayingIndex(1) && !playedWinSound)
+            {
+                soundController.PlaySound(1);
+                playedWinSound = true;
+            }
+        }
+        else
+        {
+            winObject.SetActive(false);
+            playedWinSound = false;
+        }
+
+        // TODO: keybinds should be moved to a new class
+        if (Input.GetMouseButtonDown(1))
             ClearUI();
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!menuParent.activeSelf)
+                menuButton.onClick.Invoke();
+            else if (menuParent.activeSelf)
+            {
+                soundController.PlaySound(8);
+                menuBackground.SetActive(false);
+                menuSettings.SetActive(false);
+                menuConfirm.SetActive(false);
+                menuParent.SetActive(false);
+            }
         }
 
         // lose condition
         if (playerLives <= 0 && !isGameOver)
-        {
             GameOver();
-        }
     }
 
     public void DamagePlayer()
@@ -141,8 +170,11 @@ public class WorldState : MonoBehaviour
             towerSelectionPanel.SetActive(false);
         if(towerUpgradePanel)
             towerUpgradePanel.SetActive(false);
-        if(selectionBox)
+        if (selectionBox)
+        {
+            selectionBox.GetComponent<SelectionBox>().SetTower(null);
             selectionBox.SetActive(false);
+        }
     }
 
     private void GameOver()
@@ -163,6 +195,7 @@ public class WorldState : MonoBehaviour
         // delete towers and lingering beams upon game over
         towers = GameObject.FindGameObjectsWithTag("Tower");
         beams = GameObject.FindGameObjectsWithTag("BeamTag");
+        buildLocations = GameObject.FindGameObjectsWithTag("BuildSpot");
 
         for (int i = 0; i < towers.Length; i++)
         {
@@ -173,6 +206,11 @@ public class WorldState : MonoBehaviour
         for (int i = 0; i < beams.Length; i++)
         {
             beams[i].SetActive(false);
+        }
+
+        for (int i = 0; i < buildLocations.Length; i++)
+        {
+            buildLocations[i].GetComponent<TowerGenerator>().UnhideIcon();
         }
 
         // display end panel

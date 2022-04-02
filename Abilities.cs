@@ -27,7 +27,7 @@ public class Abilities : MonoBehaviour
     {
         if (bombTargeting && Input.GetMouseButtonDown(0))
         {
-            BombDrop();
+            StartCoroutine(BombDrop());
         }
     }
 
@@ -43,25 +43,30 @@ public class Abilities : MonoBehaviour
 
             // change targeting crosshair based on colorblind setting
             int colorMode = PlayerPrefs.GetInt("colorblindMode", 0);
-            switch (colorMode)
-            {
-                case 0:
-                    cursorHotspot = new Vector2(cursorTexture[0].width / 2, cursorTexture[0].height / 2);
-                    Cursor.SetCursor(cursorTexture[0], cursorHotspot, CursorMode.Auto);
-                    break;
-                case 1:
-                case 2:
-                case 3:
-                    cursorHotspot = new Vector2(cursorTexture[1].width / 2, cursorTexture[1].height / 2);
-                    Cursor.SetCursor(cursorTexture[1], cursorHotspot, CursorMode.Auto);
-                    break;
-                case 4:
-                    cursorHotspot = new Vector2(cursorTexture[2].width / 2, cursorTexture[2].height / 2);
-                    Cursor.SetCursor(cursorTexture[2], cursorHotspot, CursorMode.Auto);
-                    break;
-                default:
-                    break;
-            }
+            ChangeCursor(colorMode);
+        }
+    }
+
+    private void ChangeCursor(int colorMode)
+    {
+        switch (colorMode)
+        {
+            case 0:
+                cursorHotspot = new Vector2(cursorTexture[0].width / 2, cursorTexture[0].height / 2);
+                Cursor.SetCursor(cursorTexture[0], cursorHotspot, CursorMode.Auto);
+                break;
+            case 1:
+            case 2:
+            case 3:
+                cursorHotspot = new Vector2(cursorTexture[1].width / 2, cursorTexture[1].height / 2);
+                Cursor.SetCursor(cursorTexture[1], cursorHotspot, CursorMode.Auto);
+                break;
+            case 4:
+                cursorHotspot = new Vector2(cursorTexture[2].width / 2, cursorTexture[2].height / 2);
+                Cursor.SetCursor(cursorTexture[2], cursorHotspot, CursorMode.Auto);
+                break;
+            default:
+                break;
         }
     }
 
@@ -76,7 +81,7 @@ public class Abilities : MonoBehaviour
         }
     }
 
-    private void BombDrop()
+    private IEnumerator BombDrop()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -84,6 +89,12 @@ public class Abilities : MonoBehaviour
         {
             bombTargeting = false;
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto); // reset cursor to default icon
+
+            soundController.PlaySound(9);
+
+            yield return new WaitForSeconds(2);
+
+            soundController.PlaySound(10);
             GameObject bombing = Instantiate(bombPrefab, hit.point, Quaternion.identity) as GameObject; // spawn explosions prefab
             Destroy(bombing, 7);
         }

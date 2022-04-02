@@ -6,24 +6,20 @@ using UnityEngine.UI;
 public class SelectionBox : MonoBehaviour
 {
 
-    public Tower tower;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
+    private Tower towerScript;
     void Update()
     {
-        if (tower)
+        if (towerScript)
         {
-            GetComponentsInChildren<Text>()[0].text = "KILLS: " + tower.killCount;
+            GetComponentsInChildren<Text>()[0].text = "KILLS: " + towerScript.killCount;
         }
-        else
-        {
+    }
+
+    public void SetTower(Tower a)
+    {
+        towerScript = a;
+
+        if(!a)
             GetComponentsInChildren<Text>()[0].text = "";
-        }
     }
 }

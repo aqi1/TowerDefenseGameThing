@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TowerGenerator : MonoBehaviour
 {
@@ -25,7 +26,7 @@ public class TowerGenerator : MonoBehaviour
         towerUpgradePanel.SetActive(false);
         towerSelectionPanel.SetActive(false);
         selectionBox.SetActive(false);
-        selectionBoxScript.tower = null;
+        selectionBoxScript.SetTower(null);
     }
 
     public void SelectTower()
@@ -48,13 +49,24 @@ public class TowerGenerator : MonoBehaviour
                 towerUpgradePanel.SetActive(true);
                 towerUpgradePanel.GetComponent<TowerSelector>().towerObject = towerObject;
             }
-            selectionBoxScript.tower = towerObject.GetComponent<Tower>();
+            selectionBoxScript.SetTower(towerObject.GetComponent<Tower>());
+            HideIcon();
         }
         else // empty spot
         {
             towerUpgradePanel.SetActive(false);
             towerSelectionPanel.SetActive(true);
-            selectionBoxScript.tower = null;
+            selectionBoxScript.SetTower(null);
         }
+    }
+
+    public void HideIcon()
+    {
+        gameObject.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f);
+    }
+
+    public void UnhideIcon()
+    {
+        gameObject.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.79f);
     }
 }
