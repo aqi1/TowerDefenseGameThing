@@ -192,6 +192,8 @@ public class WorldState : MonoBehaviour
             musicSource.PlayOneShot(endMusic);
         }
 
+        ClearUI();
+
         // delete towers and lingering beams upon game over
         towers = GameObject.FindGameObjectsWithTag("Tower");
         beams = GameObject.FindGameObjectsWithTag("BeamTag");
@@ -210,6 +212,7 @@ public class WorldState : MonoBehaviour
 
         for (int i = 0; i < buildLocations.Length; i++)
         {
+            buildLocations[i].GetComponent<TowerGenerator>().hasTower = false;
             buildLocations[i].GetComponent<TowerGenerator>().UnhideIcon();
         }
 
