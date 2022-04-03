@@ -35,6 +35,7 @@ public class TowerSelector : MonoBehaviour
             soundController.PlaySound(5);
         else
         {
+            soundController.PlaySound(12);
             soundController.PlaySound(0);
             worldState.SubtractPlayerMoney(1);
 
@@ -78,6 +79,7 @@ public class TowerSelector : MonoBehaviour
     }
 
     // keybinds for towers. Need to make this prettier
+    // TODO: move to a new keybinds class
     private void CheckForKeybinds()
     {
 

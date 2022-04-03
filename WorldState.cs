@@ -16,6 +16,7 @@ public class WorldState : MonoBehaviour
     [SerializeField] private GameObject menuParent;
     [SerializeField] private GameObject menuSettings;
     [SerializeField] private GameObject menuConfirm;
+    [SerializeField] private GameObject menuCheat;
     [SerializeField] private Button menuButton;
 
     [SerializeField] private Text gameOverStats;
@@ -28,6 +29,7 @@ public class WorldState : MonoBehaviour
     [SerializeField] private GameObject towerSelectionPanel;
     [SerializeField] private GameObject towerUpgradePanel;
     [SerializeField] private GameObject selectionBox;
+    [SerializeField] private GameObject explosion;
 
     [SerializeField] private GameObject sounds;
     [SerializeField] private GameObject jukeBox;
@@ -92,7 +94,7 @@ public class WorldState : MonoBehaviour
             playedWinSound = false;
         }
 
-        // TODO: keybinds should be moved to a new class
+        // TODO: keybinds and UI should be moved to a new class
         if (Input.GetMouseButtonDown(1))
             ClearUI();
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -106,6 +108,7 @@ public class WorldState : MonoBehaviour
                 menuSettings.SetActive(false);
                 menuConfirm.SetActive(false);
                 menuParent.SetActive(false);
+                menuCheat.SetActive(false);
             }
         }
 
@@ -132,6 +135,15 @@ public class WorldState : MonoBehaviour
 
         if (!soundController.IsPlayingIndex(7))
             soundController.PlaySound(7);
+    }
+
+    // for cheat code. No sound effect.
+    public void HealPlayer(int a)
+    {
+        if (playerLives <= 0 || isGameOver)
+            return;
+
+        playerLives += a;
     }
 
     public void AddPlayerMoney(float a)
@@ -182,15 +194,18 @@ public class WorldState : MonoBehaviour
         isGameOver = true;
 
         playerMoney = 0.0f;
-        soundController.StopSound(4);
-        soundController.PlaySound(3);
 
-        if (musicSource)
-        {
-            if (musicSource.isPlaying)
-                musicSource.Stop();
-            musicSource.PlayOneShot(endMusic);
-        }
+        soundController.StopSound(4);
+        soundController.PlaySound(11); // kaboom
+
+        if (musicSource.isPlaying)
+            musicSource.Stop();
+        musicSource.PlayOneShot(endMusic); // end music
+
+        if (waveAtm < 6)
+            soundController.PlaySound(13); // mission is a failure
+        else
+            soundController.PlaySound(3); // battle control terminated
 
         ClearUI();
 
@@ -202,6 +217,7 @@ public class WorldState : MonoBehaviour
         for (int i = 0; i < towers.Length; i++)
         {
             defensesBuilt += 1;
+            Instantiate(explosion, towers[i].transform.position, Quaternion.identity);
             towers[i].SetActive(false);
         }
 
