@@ -16,6 +16,7 @@ public class TowerShooting : MonoBehaviour
     [SerializeField] private ParticleSystem muzzleFlash1;
     [SerializeField] private ParticleSystem muzzleFlash2;
     [SerializeField] private GameObject towerHead;
+    [SerializeField] private GameObject missile;
     private SciFiBeamScript beamer;
     private AudioSource audioSource;
     private Tower tower;
@@ -100,12 +101,15 @@ public class TowerShooting : MonoBehaviour
                 case TOWER_TYPE.ARTILLERY:
                     ShootArtillery();
                     break;
+                case TOWER_TYPE.MISSILE:
+                    StartCoroutine(ShootMissile());
+                    break;
                 default:
                     break;
             }
 
             // play attack sound
-            if(audioSource && !audioSource.isPlaying)
+            if(!audioSource.isPlaying && tower.towerType != TOWER_TYPE.MISSILE)
                 audioSource.Play();
 
             // add some randomness to the attack rate
@@ -189,5 +193,27 @@ public class TowerShooting : MonoBehaviour
         }
 
         worldState.ordnanceDetonated += 1;
+    }
+
+    private IEnumerator ShootMissile()
+    {
+        GameObject launchedMissile;
+        int launchThisManyTimes = 2;
+        // TODO: instantiate a missile
+
+        for (int i = 0; i < launchThisManyTimes; i++)
+        {
+            audioSource.Play();
+            if (target)
+            {
+                launchedMissile = Instantiate(missile, fireLocation.position, Quaternion.LookRotation(target.transform.position - fireLocation.position)) as GameObject;
+                launchedMissile.GetComponent<Missile>().SetTarget(target);
+                launchedMissile.GetComponent<Missile>().SetParentTower(tower);
+                worldState.missilesLaunched += 1;
+                yield return new WaitForSeconds(0.20f);
+            }
+            else
+                break;
+        }
     }
 }

@@ -94,7 +94,7 @@ public class TowerSelector : MonoBehaviour
                 if(!sortingByRange)
                     AddTower(towers[0]);
                 else
-                    AddTower(towers[2]);
+                    AddTower(towers[3]);
             }
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2) && !towerLocation.GetComponent<TowerGenerator>().hasTower)
@@ -102,19 +102,26 @@ public class TowerSelector : MonoBehaviour
             if (!sortingByRange)
                 AddTower(towers[1]);
             else
-                AddTower(towers[3]);
+                AddTower(towers[4]);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3) && !towerLocation.GetComponent<TowerGenerator>().hasTower)
         {
             if (!sortingByRange)
                 AddTower(towers[2]);
             else
-                AddTower(towers[1]);
+                AddTower(towers[2]);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4) && !towerLocation.GetComponent<TowerGenerator>().hasTower)
         {
             if (!sortingByRange)
                 AddTower(towers[3]);
+            else
+                AddTower(towers[1]);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha5) && !towerLocation.GetComponent<TowerGenerator>().hasTower)
+        {
+            if (!sortingByRange)
+                AddTower(towers[4]);
             else
                 AddTower(towers[0]);
         }

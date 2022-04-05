@@ -52,6 +52,7 @@ public class WorldState : MonoBehaviour
     public uint flamesSpread = 0;
     public uint beamsProjected = 0;
     public uint ordnanceDetonated = 0;
+    public uint missilesLaunched = 0;
     public uint casualtiesInflicted = 0;
 
     private bool isGameOver = false;
