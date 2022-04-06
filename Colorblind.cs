@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Colorblind : MonoBehaviour
 {
     [SerializeField] private Text waveText, enemyText, lifeText, moneyText, winText;
-    [SerializeField] private Image backgroundPanel, abilityPanel, damagePanel, rangePanel;
+    [SerializeField] private Image backgroundPanel, abilityPanel, damagePanel, rangePanel, upgradePanel;
     private Color whiteRed = new Color(1.0f, 0.2f, 0.2f, 1.0f);
     private Color kindablue = new Color(0.63f, 0.75f, 0.95f, 1.0f);
     private Color greyish = new Color(1f, 1f, 1f, 1f);
@@ -32,9 +32,9 @@ public class Colorblind : MonoBehaviour
                 abilityPanel.color = Color.white;
                 damagePanel.color = Color.white;
                 rangePanel.color = Color.white;
+                upgradePanel.color = Color.white;
                 break;
             case 1:
-            case 2:
                 waveText.color = kindablue;
                 enemyText.color = kindablue;
                 lifeText.color = kindablue;
@@ -44,6 +44,19 @@ public class Colorblind : MonoBehaviour
                 abilityPanel.color = halfEverything;
                 damagePanel.color = halfEverything;
                 rangePanel.color = halfEverything;
+                upgradePanel.color = halfEverything;
+                break;
+            case 2:
+                waveText.color = Color.yellow;
+                enemyText.color = Color.yellow;
+                lifeText.color = Color.yellow;
+                moneyText.color = Color.yellow;
+                winText.color = Color.yellow;
+                backgroundPanel.color = halfEverything;
+                abilityPanel.color = halfEverything;
+                damagePanel.color = halfEverything;
+                rangePanel.color = halfEverything;
+                upgradePanel.color = halfEverything;
                 break;
             case 3:
                 Color orange = new Color(1f, 0.5f, 0.1f);
@@ -56,6 +69,7 @@ public class Colorblind : MonoBehaviour
                 abilityPanel.color = halfEverything;
                 damagePanel.color = halfEverything;
                 rangePanel.color = halfEverything;
+                upgradePanel.color = halfEverything;
                 break;
             case 4:
                 
@@ -68,6 +82,7 @@ public class Colorblind : MonoBehaviour
                 abilityPanel.color = halfEverything;
                 damagePanel.color = halfEverything;
                 rangePanel.color = halfEverything;
+                upgradePanel.color = halfEverything;
                 break; 
             default:
                 break;

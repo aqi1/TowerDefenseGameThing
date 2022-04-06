@@ -14,7 +14,6 @@ public class Enemy : MonoBehaviour
     private EnemySpawner enemySpawnerScript;
     private bool amIDead = false;
     private bool amISlowed = false;
-    private Tower lastTowerToHitMe = null;
     [SerializeField] public float fireDamageMultiplier = 1f;
 
     // Start is called before the first frame update
@@ -91,12 +90,12 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(float damage, Tower tower)
     {
-        lastTowerToHitMe = tower;
+        Tower lastTowerToHitMe = tower;
 
         if (health > 0)
         {
             // fire damage multiplier from flame turret
-            if (tower.towerType == TOWER_TYPE.FLAME)
+            if (lastTowerToHitMe && lastTowerToHitMe.towerType == TOWER_TYPE.FLAME)
             {
                 if(!bossEnemy)
                     health = health - damage * fireDamageMultiplier;
@@ -133,7 +132,8 @@ public class Enemy : MonoBehaviour
             Destroy(gameObject, 5);
             enemySpawnerScript.EnemyKilled(); // decrements enemy count
 
-            tower.killCount += 1;
+            if(lastTowerToHitMe)
+                lastTowerToHitMe.killCount += 1;
         }
     }
 
