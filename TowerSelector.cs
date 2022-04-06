@@ -95,6 +95,7 @@ public class TowerSelector : MonoBehaviour
                     AddTower(towers[0]);
                 else
                     AddTower(towers[3]);
+                TooltipSystem.Hide();
             }
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2) && !towerLocation.GetComponent<TowerGenerator>().hasTower)
@@ -103,6 +104,7 @@ public class TowerSelector : MonoBehaviour
                 AddTower(towers[1]);
             else
                 AddTower(towers[4]);
+            TooltipSystem.Hide();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3) && !towerLocation.GetComponent<TowerGenerator>().hasTower)
         {
@@ -110,6 +112,7 @@ public class TowerSelector : MonoBehaviour
                 AddTower(towers[2]);
             else
                 AddTower(towers[2]);
+            TooltipSystem.Hide();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4) && !towerLocation.GetComponent<TowerGenerator>().hasTower)
         {
@@ -117,6 +120,7 @@ public class TowerSelector : MonoBehaviour
                 AddTower(towers[3]);
             else
                 AddTower(towers[1]);
+            TooltipSystem.Hide();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha5) && !towerLocation.GetComponent<TowerGenerator>().hasTower)
         {
@@ -124,6 +128,7 @@ public class TowerSelector : MonoBehaviour
                 AddTower(towers[4]);
             else
                 AddTower(towers[0]);
+            TooltipSystem.Hide();
         }
     }
 }

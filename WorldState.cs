@@ -96,9 +96,12 @@ public class WorldState : MonoBehaviour
         }
 
         // TODO: keybinds and UI should be moved to a new class
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1)) // right click to "deselect" everything
+        {
             ClearUI();
-        if (Input.GetKeyDown(KeyCode.Escape))
+            TooltipSystem.Hide();
+        }
+        if (Input.GetKeyDown(KeyCode.Escape)) // open game menu
         {
             if (!menuParent.activeSelf)
                 menuButton.onClick.Invoke();
@@ -111,11 +114,14 @@ public class WorldState : MonoBehaviour
                 menuParent.SetActive(false);
                 menuCheat.SetActive(false);
             }
+            TooltipSystem.Hide();
         }
 
         // lose condition
         if (playerLives <= 0 && !isGameOver)
             GameOver();
+        if (isGameOver) // in game over state, set money to 0 repeatedly
+            playerMoney = 0.0f;
     }
 
     public void DamagePlayer()
@@ -183,7 +189,7 @@ public class WorldState : MonoBehaviour
             towerSelectionPanel.SetActive(false);
         if(towerUpgradePanel)
             towerUpgradePanel.SetActive(false);
-        if (selectionBox)
+        if(selectionBox)
         {
             selectionBox.GetComponent<SelectionBox>().SetTower(null);
             selectionBox.SetActive(false);
@@ -194,8 +200,7 @@ public class WorldState : MonoBehaviour
     {
         isGameOver = true;
 
-        playerMoney = 0.0f;
-
+        soundController.StopSound(3);
         soundController.StopSound(4);
         soundController.PlaySound(11); // kaboom
 
@@ -204,9 +209,9 @@ public class WorldState : MonoBehaviour
         musicSource.PlayOneShot(endMusic); // end music
 
         if (waveAtm < 6)
-            soundController.PlaySound(13); // mission is a failure
+            soundController.PlaySound(13); // sound: mission is a failure
         else
-            soundController.PlaySound(3); // battle control terminated
+            soundController.PlaySound(3); // sound: battle control terminated
 
         ClearUI();
 
@@ -248,8 +253,9 @@ public class WorldState : MonoBehaviour
         gameOverStats.text += defensesBuilt + "\n"
                             + defensesUpgraded + "\n\n"
                             + bulletsFired + "\n"
-                            + flamesSpread + "\n"
                             + beamsProjected + "\n"
+                            + flamesSpread + "\n"
+                            + missilesLaunched + "\n"
                             + ordnanceDetonated + "\n\n"
                             + casualtiesInflicted + "\n"
                             + "1";

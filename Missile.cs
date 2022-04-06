@@ -10,15 +10,15 @@ public class Missile : MonoBehaviour
     private GameObject target; // pass in from parent (no target changing allowed mid-flight)
     private Vector3 targetLocation; // last location of target
     private bool detonated;
+    private bool targetWasSet;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        targetWasSet = false;
         detonated = false;
         Destroy(gameObject, 30); // if no detonation in 30 sec, it probably went off the rails
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(!detonated)
@@ -29,6 +29,7 @@ public class Missile : MonoBehaviour
     {
         target = enemyTarget;
         targetLocation = target.transform.position;
+        targetWasSet = true;
     }
 
     public void SetParentTower(Tower t)
@@ -41,15 +42,17 @@ public class Missile : MonoBehaviour
         if(target)
             targetLocation = target.transform.position;
 
-        transform.position += (targetLocation - transform.position).normalized * Time.deltaTime * missileSpeed;
-        Quaternion rot = Quaternion.LookRotation((targetLocation - transform.position).normalized);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, 10f);
+        if(targetWasSet)
+        {
+            transform.position += (targetLocation - transform.position).normalized * Time.deltaTime * missileSpeed;
+            Quaternion rot = Quaternion.LookRotation((targetLocation - transform.position).normalized);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, 10f);
 
-        if (Vector3.Distance(transform.position, targetLocation) <= 0.2f)
-            Explode();
+            if (Vector3.Distance(transform.position, targetLocation) <= 0.2f)
+                Explode();
+        }
     }
-
-    private void Explode()
+    public void Explode()
     {
         detonated = true;
         GameObject explosion;
