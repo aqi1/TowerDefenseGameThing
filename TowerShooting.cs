@@ -122,7 +122,7 @@ public class TowerShooting : MonoBehaviour
         muzzleFlash1.Play();
         muzzleFlash2.Play();
         Enemy enemy = target.GetComponent<Enemy>();
-        enemy.fireDamageMultiplier += 0.16f * (1 + tower.upgradeLevel / 4);
+        enemy.fireDamageMultiplier += 0.1f;
         enemy.TakeDamage(tower.towerDamage * tower.upgradeLevel, tower);
 
         worldState.bulletsFired += 1;
@@ -159,7 +159,7 @@ public class TowerShooting : MonoBehaviour
         }
 
         groundFire.transform.parent = gameObject.transform;
-        enemy.TakeDamage(tower.towerDamage * tower.upgradeLevel * enemy.fireDamageMultiplier, tower);
+        enemy.TakeDamage(tower.towerDamage * tower.upgradeLevel, tower);
         Destroy(groundFire, 10);
 
         worldState.flamesSpread += 1;

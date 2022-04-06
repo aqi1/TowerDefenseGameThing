@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour
     private WorldState worldState;
     [SerializeField] private float health;
     [SerializeField] private float speed = 3f;
+    [SerializeField] private bool bossEnemy;
     private List<GameObject> enemyPath;
     private GameObject prev, next;
     private EnemySpawner enemySpawnerScript;
@@ -27,22 +28,26 @@ public class Enemy : MonoBehaviour
         else if (enemySpawnerScript.GetWaveNumber() <= 10)
         {   // exponential health multiplier starting on wave 6
             health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.6f), 1.08f);
-            speed = speed * 1.2f;
+            if(!bossEnemy)
+                speed = speed * 1.2f;
         }
         else if (enemySpawnerScript.GetWaveNumber() <= 15)
         {   // even more exponential health multiplier starting on wave 11
             health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.55f), 1.13f);
-            speed = speed * 1.44f;
+            if (!bossEnemy)
+                speed = speed * 1.44f;
         }
         else if (enemySpawnerScript.GetWaveNumber() <= 20)
         {   // good luck
             health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.5f), 1.20f);
-            speed = speed * 1.44f;
+            if (!bossEnemy)
+                speed = speed * 1.44f;
         }
         else
         {   // good luck
             health = Mathf.Pow(health * (enemySpawnerScript.GetWaveNumber() / 1.5f), 1.25f);
-            speed = speed * 1.44f;
+            if (!bossEnemy)
+                speed = speed * 1.44f;
         }
 
         enemyPath = PathGenerator.GetPath();
@@ -74,7 +79,12 @@ public class Enemy : MonoBehaviour
         else // reached end of path
         {
             Destroy(gameObject);
-            worldState.GetComponent<WorldState>().DamagePlayer();
+
+            if(!bossEnemy)
+                worldState.GetComponent<WorldState>().DamagePlayer();
+            else
+                worldState.GetComponent<WorldState>().DamagePlayer(200); // if boss makes it to the end, insta-kill player
+
             enemySpawnerScript.EnemyKilled(); // decrements enemy count
         }
     }
@@ -84,7 +94,18 @@ public class Enemy : MonoBehaviour
         lastTowerToHitMe = tower;
 
         if (health > 0)
-            health = health - damage;
+        {
+            // fire damage multiplier from flame turret
+            if (tower.towerType == TOWER_TYPE.FLAME)
+            {
+                if(!bossEnemy)
+                    health = health - damage * fireDamageMultiplier;
+                else
+                    health = health - damage * (fireDamageMultiplier * 0.08f);
+            }
+            else
+                health = health - damage;
+        }
         if(health <= 0 && !amIDead)
         {
             amIDead = true;
@@ -101,7 +122,10 @@ public class Enemy : MonoBehaviour
             gameObject.GetComponent<CapsuleCollider>().enabled = false;
 
             // give player money
-            worldState.AddPlayerMoney(0.25f);
+            if(!bossEnemy)
+                worldState.AddPlayerMoney(0.25f);
+            else
+                worldState.AddPlayerMoney(25f);
 
             // increment kill counter
             worldState.casualtiesInflicted += 1;
@@ -109,14 +133,13 @@ public class Enemy : MonoBehaviour
             Destroy(gameObject, 5);
             enemySpawnerScript.EnemyKilled(); // decrements enemy count
 
-            if (tower)
-                tower.killCount += 1;
+            tower.killCount += 1;
         }
     }
 
     public void HitByLaser(int slowEffectDivisor)
     {
-        if (!amISlowed)
+        if (!amISlowed && !bossEnemy) // bosses are unslowable, otherwise it's too cheesy
             StartCoroutine(Slowed(slowEffectDivisor));
     }
 
@@ -125,13 +148,19 @@ public class Enemy : MonoBehaviour
         // stood in fire
         if (other.gameObject.tag == "aoeDamage")
         {
-            TakeDamage(30f * fireDamageMultiplier * Time.fixedDeltaTime, other.gameObject.transform.parent.transform.parent.GetComponent<Tower>()); // that's bad
+            if(!bossEnemy)
+                TakeDamage(30f * fireDamageMultiplier * Time.fixedDeltaTime, other.gameObject.transform.parent.transform.parent.GetComponent<Tower>());
+            else
+                TakeDamage(30f * (fireDamageMultiplier * 0.08f) * Time.fixedDeltaTime, other.gameObject.transform.parent.transform.parent.GetComponent<Tower>());
         }
         else if (other.gameObject.tag == "aoeDamage2")
         {
-            TakeDamage(45f * fireDamageMultiplier * Time.fixedDeltaTime, other.gameObject.transform.parent.transform.parent.GetComponent<Tower>());
+            if (!bossEnemy)
+                TakeDamage(45f * fireDamageMultiplier * Time.fixedDeltaTime, other.gameObject.transform.parent.transform.parent.GetComponent<Tower>());
+            else
+                TakeDamage(45f * (fireDamageMultiplier * 0.08f) * Time.fixedDeltaTime, other.gameObject.transform.parent.transform.parent.GetComponent<Tower>());
         }
-        // bombing run effect
+        // stood in bombs
         else if (other.gameObject.tag == "bombDamage")
         {
             TakeDamage(1200f * Time.fixedDeltaTime, null);
@@ -142,7 +171,7 @@ public class Enemy : MonoBehaviour
     {
         amISlowed = true;
         speed = speed / a;
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
         speed = speed * a;
         amISlowed = false;
     }

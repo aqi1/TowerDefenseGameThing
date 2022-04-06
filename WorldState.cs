@@ -133,6 +133,17 @@ public class WorldState : MonoBehaviour
             soundController.PlaySound(4);
     }
 
+    public void DamagePlayer(int damage)
+    {
+        if (playerLives > 0 && playerLives >= damage)
+            playerLives -= damage;
+        else
+            playerLives = 0;
+
+        if (!soundController.IsPlayingIndex(4) && !isGameOver)
+            soundController.PlaySound(4);
+    }
+
     public void HealPlayer()
     {
         if (playerLives <= 0 || isGameOver)
@@ -199,10 +210,9 @@ public class WorldState : MonoBehaviour
     private void GameOver()
     {
         isGameOver = true;
-
-        soundController.StopSound(3);
-        soundController.StopSound(4);
-        soundController.PlaySound(11); // kaboom
+        soundController.StopSound(1); // stop sound: enemy unit destroyed
+        soundController.StopSound(4); // stop sound: civ killed
+        soundController.PlaySound(11); // sound: kaboom
 
         if (musicSource.isPlaying)
             musicSource.Stop();
@@ -261,7 +271,7 @@ public class WorldState : MonoBehaviour
                             + "1";
 
         gameOverLore.text = "## NECROLOGUE ##\n\n";
-        if (waveAtm > 20)
+        if (waveAtm > 15)
         {
             gameOverLore.text += "Your unrelenting soul burns brightly as a beacon of hope parallel to that of the"
                             + " God-Emperor Himself. You have ascended to the highest pantheons of sainthood, and your name is"
